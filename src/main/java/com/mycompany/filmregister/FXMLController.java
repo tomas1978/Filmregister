@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 public class FXMLController implements Initializable {
 
     FilmManager minaFilmer = new FilmManager();
+    int aktuellFilm = 0;
     
     @FXML
     private TextField titelTextBox;
@@ -68,7 +69,7 @@ public class FXMLController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         System.out.println("Init run");
-        filmerListView = new ListView<Film>();
+        filmerListView = new ListView<>();
     }    
     
     @FXML
@@ -79,6 +80,24 @@ public class FXMLController implements Initializable {
         minaFilmer.läggTillFilm(nyFilm);
         System.out.println(minaFilmer);
         //filmerListView.setItems(minaFilmer.getObsFilmLista());
+    }
+    
+    @FXML
+    void visaNästaAction(ActionEvent event) {
+        System.out.println(minaFilmer.getFilmlista().size());
+        if(aktuellFilm<minaFilmer.getFilmlista().size()) {
+            titelTextBox.setText(minaFilmer.getFilmlista().
+                    get(aktuellFilm).getTitel());
+            regissörTextBox.setText(minaFilmer.getFilmlista().
+                    get(aktuellFilm).getRegissör());
+            längdTextBox.setText(Integer.toString(minaFilmer.getFilmlista().
+                    get(aktuellFilm).getLängd()));
+            betygTextBox.setText(Float.toString(minaFilmer.getFilmlista().
+                    get(aktuellFilm).getImdbBetyg()));
+            aktuellFilm++;
+        } else {
+            aktuellFilm=0;
+        }
     }
     
     @FXML
