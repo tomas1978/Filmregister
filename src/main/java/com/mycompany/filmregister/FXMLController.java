@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 
 public class FXMLController implements Initializable {
 
-    FilmManager minaFilmer = new FilmManager();
+    FilmManager minaFilmer;
     int aktuellFilm = 0;
     
     @FXML
@@ -48,13 +48,12 @@ public class FXMLController implements Initializable {
 
     @FXML
     void searchAction(ActionEvent event) {
-        
+        System.out.println("Längd: "+minaFilmer.getFilmlista().size());
     }
 
     @FXML
     void visaAllaAction(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/visaFilmerScene.fxml"));
-        
         filmerListView.setItems(minaFilmer.getObsFilmLista());
         
         Stage s = new Stage();
@@ -68,8 +67,12 @@ public class FXMLController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        System.out.println("Init run");
+        minaFilmer = new FilmManager();
         filmerListView = new ListView<>();
+        minaFilmer.läggTillFilm(new Film("Star Wars V","George Lucas",121,9.2f));
+        minaFilmer.läggTillFilm(new Film("Terminator 2","James Cameron",124,8.7f));
+        minaFilmer.läggTillFilm(new Film("Star Trek","J.J. Abrams", 119, 7.6f));
+        filmerListView.setItems(minaFilmer.getObsFilmLista());
     }    
     
     @FXML
@@ -93,7 +96,7 @@ public class FXMLController implements Initializable {
             längdTextBox.setText(Integer.toString(minaFilmer.getFilmlista().
                     get(aktuellFilm).getLängd()));
             betygTextBox.setText(Float.toString(minaFilmer.getFilmlista().
-                    get(aktuellFilm).getImdbBetyg()));
+                    get(aktuellFilm).getBetyg()));
             aktuellFilm++;
         } else {
             aktuellFilm=0;
@@ -103,5 +106,13 @@ public class FXMLController implements Initializable {
     @FXML
     void updateMovieListAction(ActionEvent event) {
          filmerListView.setItems(minaFilmer.getObsFilmLista());
+    }
+    
+    @FXML
+    void skapaNyFilmAction(ActionEvent event) {
+        titelTextBox.setText("");
+        regissörTextBox.setText("");
+        längdTextBox.setText("");
+        betygTextBox.setText("");
     }
 }
