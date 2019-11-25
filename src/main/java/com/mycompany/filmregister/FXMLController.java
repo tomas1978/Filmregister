@@ -19,6 +19,9 @@ public class FXMLController implements Initializable {
     int aktuellFilm = 0;
     
     @FXML
+    private TextField idTextBox;
+    
+    @FXML
     private TextField titelTextBox;
 
     @FXML
@@ -69,15 +72,17 @@ public class FXMLController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         minaFilmer = new FilmManager();
         filmerListView = new ListView<>();
-        minaFilmer.läggTillFilm(new Film("Star Wars V","George Lucas",121,9.2f));
-        minaFilmer.läggTillFilm(new Film("Terminator 2","James Cameron",124,8.7f));
-        minaFilmer.läggTillFilm(new Film("Star Trek","J.J. Abrams", 119, 7.6f));
+        minaFilmer.läggTillFilm(new Film(1,"Star Wars V","George Lucas",121,9.2f));
+        minaFilmer.läggTillFilm(new Film(2,"Terminator 2","James Cameron",124,8.7f));
+        minaFilmer.läggTillFilm(new Film(3,"Star Trek","J.J. Abrams", 119, 7.6f));
         filmerListView.setItems(minaFilmer.getObsFilmLista());
     }    
     
     @FXML
     void läggTillFilmAction(ActionEvent event) {
-        Film nyFilm = new Film(titelTextBox.getText(), regissörTextBox.getText(), 
+        Film nyFilm = new Film( Integer.parseInt(idTextBox.getText()),
+                                titelTextBox.getText(), 
+                                regissörTextBox.getText(), 
                                 Integer.parseInt(längdTextBox.getText()), 
                                 Float.parseFloat(betygTextBox.getText()));
         minaFilmer.läggTillFilm(nyFilm);
@@ -89,6 +94,8 @@ public class FXMLController implements Initializable {
     void visaNästaAction(ActionEvent event) {
         System.out.println(minaFilmer.getFilmlista().size());
         if(aktuellFilm<minaFilmer.getFilmlista().size()) {
+            idTextBox.setText(Integer.toString(minaFilmer.getFilmlista().
+                    get(aktuellFilm).getFilmID()));
             titelTextBox.setText(minaFilmer.getFilmlista().
                     get(aktuellFilm).getTitel());
             regissörTextBox.setText(minaFilmer.getFilmlista().
@@ -110,6 +117,7 @@ public class FXMLController implements Initializable {
     
     @FXML
     void skapaNyFilmAction(ActionEvent event) {
+        idTextBox.setText(Integer.toString(minaFilmer.getStörstaID()+1));
         titelTextBox.setText("");
         regissörTextBox.setText("");
         längdTextBox.setText("");
