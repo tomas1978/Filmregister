@@ -2,6 +2,11 @@ package com.mycompany.filmregister;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -72,9 +77,7 @@ public class FXMLController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         minaFilmer = new FilmManager();
         filmerListView = new ListView<>();
-        minaFilmer.läggTillFilm(new Film(1,"Star Wars V","George Lucas",121,9.2f));
-        minaFilmer.läggTillFilm(new Film(2,"Terminator 2","James Cameron",124,8.7f));
-        minaFilmer.läggTillFilm(new Film(3,"Star Trek","J.J. Abrams", 119, 7.6f));
+        minaFilmer.setFilmLista(this.readFromDatabase());
         filmerListView.setItems(minaFilmer.getObsFilmLista());
     }    
     
@@ -122,5 +125,35 @@ public class FXMLController implements Initializable {
         regissörTextBox.setText("");
         längdTextBox.setText("");
         betygTextBox.setText("");
+    }
+    
+    List<Film> readFromDatabase() {
+        try {
+            Connection connection = ConnectionFactory.getConnection();
+            Statement stmt = connection.createStatement();
+            String sql = "SELECT * FROM filmer";
+            ResultSet data = stmt.executeQuery(sql);
+            List<Film> filmer=new ArrayList<>();
+            
+            while(data.next()) {
+                int id = Integer.parseInt(data.getString("filmID"));
+                System.out.println(id);
+                String titel = data.getString("titel");
+                System.out.println(titel);
+                String regissör = data.getString("regissör");
+                System.out.println(regissör);
+                int längd = Integer.parseInt(data.getString("längd"));
+                System.out.println(längd);
+                float betyg = Float.parseFloat(data.getString("längd"));
+                System.out.println(betyg);
+                filmer.add(new Film(id,titel,regissör,längd,betyg));
+            }
+            
+            return filmer;
+            
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return null;
     }
 }
